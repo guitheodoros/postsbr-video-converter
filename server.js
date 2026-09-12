@@ -37,19 +37,28 @@ app.post("/convert", upload.single("video"), (req, res) => {
 
   execFile(ffmpegPath, [
     "-y",
+    "-nostdin",
+    "-threads", "2",
     "-i", inputPath,
     "-c:v", "libx264",
+    "-threads", "2",
     "-pix_fmt", "yuv420p",
     "-r", "30",
-    "-vsync", "cfr",
+    "-fps_mode", "cfr",
     "-movflags", "+faststart",
     outputPath
-  ], (err, stdout, stderr) => {
+  ], { maxBuffer: 1024 * 1024 * 20 }, (err, stdout, stderr) => {
     fs.unlink(inputPath, () => {});
 
     if (err) {
-      console.error("ffmpeg error:", err, stderr);
-      return res.status(500).json({ error: "Falha na conversão do vídeo", detail: err.message, stderr: String(stderr).slice(-2000) });
+      console.error("ffmpeg error:", { code: err.code, signal: err.signal, killed: err.killed, message: err.message });
+      return res.status(500).json({
+        error: "Falha na conversão do vídeo",
+        code: err.code,
+        signal: err.signal,
+        killed: err.killed,
+        stderr: String(stderr).slice(-2000)
+      });
     }
 
     res.sendFile(outputPath, (sendErr) => {
