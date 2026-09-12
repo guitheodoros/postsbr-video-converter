@@ -18,6 +18,15 @@ app.get("/", (req, res) => {
   res.json({ ok: true, message: "PostSBR video converter online" });
 });
 
+app.get("/debug", (req, res) => {
+  res.json({
+    ffmpegPath,
+    ffmpegExists: fs.existsSync(ffmpegPath),
+    platform: os.platform(),
+    arch: os.arch()
+  });
+});
+
 app.post("/convert", upload.single("video"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "Nenhum arquivo de vídeo enviado" });
@@ -35,12 +44,12 @@ app.post("/convert", upload.single("video"), (req, res) => {
     "-vsync", "cfr",
     "-movflags", "+faststart",
     outputPath
-  ], (err) => {
+  ], (err, stdout, stderr) => {
     fs.unlink(inputPath, () => {});
 
     if (err) {
-      console.error("ffmpeg error:", err);
-      return res.status(500).json({ error: "Falha na conversão do vídeo" });
+      console.error("ffmpeg error:", err, stderr);
+      return res.status(500).json({ error: "Falha na conversão do vídeo", detail: err.message, stderr: String(stderr).slice(-2000) });
     }
 
     res.sendFile(outputPath, (sendErr) => {
