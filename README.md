@@ -1,6 +1,6 @@
 # PostSBR — servidor de conversão de vídeo
 
-Servidor pequeno em Node/Express que recebe um arquivo `.webm` (gravado no navegador) e devolve um `.mp4` pronto para o Instagram (H.264, yuv420p, 30fps), usando o ffmpeg nativo (via `ffmpeg-static`, um binário pronto — não precisa instalar ffmpeg no servidor).
+Servidor pequeno em Node/Express que recebe um arquivo `.webm` (gravado no navegador, já com o áudio original do vídeo de fundo mixado) e devolve um `.mp4` pronto para o Instagram (H.264, yuv420p, 30fps, áudio AAC), usando o ffmpeg nativo (via `ffmpeg-static`, um binário pronto — não precisa instalar ffmpeg no servidor).
 
 Sem esse servidor, o app converte o vídeo no próprio navegador (mais lento, 1 a 4 minutos). Com o servidor, a conversão leva menos de 1 segundo.
 

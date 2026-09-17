@@ -45,6 +45,8 @@ app.post("/convert", upload.single("video"), (req, res) => {
     "-pix_fmt", "yuv420p",
     "-r", "30",
     "-fps_mode", "cfr",
+    "-c:a", "aac",
+    "-b:a", "128k",
     "-movflags", "+faststart",
     outputPath
   ], { maxBuffer: 1024 * 1024 * 20 }, (err, stdout, stderr) => {
