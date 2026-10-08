@@ -41,6 +41,7 @@ app.post("/convert", upload.single("video"), (req, res) => {
     "-threads", "2",
     "-i", inputPath,
     "-c:v", "libx264",
+    "-preset", "veryfast",
     "-threads", "2",
     "-pix_fmt", "yuv420p",
     "-r", "30",
